@@ -1,3 +1,6 @@
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+
 # ================= CONFIGURACIÓN BÁSICA =================
 $MinecraftVer = "1.21.1"
 $FabricLoaderVer = "0.18.2"
@@ -51,6 +54,23 @@ if ($seleccion -eq "e" -or $seleccion -eq "E") {
 # El nombre base se usa para detectar y eliminar versiones antiguas
 $ModList = @{
     "fabric-api" = "https://cdn.modrinth.com/data/P7dR8mSH/versions/m6zu1K31/fabric-api-0.116.7+1.21.1.jar"
+    "accessories-fabric" = "https://cdn.modrinth.com/data/jtmvUHXj/versions/uPPIhLTH/accessories-fabric-1.1.0-beta.52+1.21.1.jar"
+    "architectury" = "https://cdn.modrinth.com/data/lhGA9TYQ/versions/Wto0RchG/architectury-13.0.8-fabric.jar"
+    "BiomesOPlenty" = "https://cdn.modrinth.com/data/HXF82T3G/versions/YPm4arUa/BiomesOPlenty-fabric-1.21.1-21.1.0.13.jar"
+    "chefsdelight" = "https://cdn.modrinth.com/data/pvcsfne4/versions/Sur0Lj66/chefsdelight-1.0.5-fabric-1.21.1.jar"
+    "Cobblemon" = "https://cdn.modrinth.com/data/MdwFAVRL/versions/s64m1opn/Cobblemon-fabric-1.7.1+1.21.1.jar"
+    "mega_showdown" = "https://cdn.modrinth.com/data/SszvX85I/versions/f05e8UwL/mega_showdown-fabric-1.4.4+1.7.1+1.21.1.jar"
+    "farmers-cutting-biomes-o-plenty" = "https://cdn.modrinth.com/data/QWfaJXEc/versions/ErfSMjj4/farmers-cutting-biomes-o-plenty-1.21-2.0.0-fabric.jar"
+    "farmers-cutting-regions-unexplored" = "https://cdn.modrinth.com/data/lFKDc2ny/versions/GrhjtZEe/farmers-cutting-regions-unexplored-1.21.1-1.1a-fabric.jar"
+    "FarmersDelight" = "https://cdn.modrinth.com/data/7vxePowz/versions/vj4n2BSl/FarmersDelight-1.21.1-3.2.2+refabricated.jar"
+    "farmersknives" = "https://cdn.modrinth.com/data/uc3VdfLM/versions/2wn5TnBh/farmersknives-fabric-1.21.1-4.0.4.jar"
+    "ForgeConfigAPIPort" = "https://cdn.modrinth.com/data/ohNO6lps/versions/N5qzq0XV/ForgeConfigAPIPort-v21.1.6-1.21.1-Fabric.jar"
+    "GlitchCore" = "https://cdn.modrinth.com/data/s3dmwKy5/versions/lbSHOhee/GlitchCore-fabric-1.21.1-2.1.0.0.jar"
+    "jei" = "https://cdn.modrinth.com/data/u6dRKJwZ/versions/P23di0ns/jei-1.21.1-fabric-19.25.1.332.jar"
+    "owo-lib" = "https://cdn.modrinth.com/data/ccKDOlHs/versions/JB1fLQnc/owo-lib-0.12.15.4+1.21.jar"
+    "regions_unexplored" = "https://cdn.modrinth.com/data/Tkikq67H/versions/ZS3DtSyB/regions_unexplored-fabric-1.21.1-0.5.6.1.jar"
+    "TerraBlender" = "https://cdn.modrinth.com/data/kkmrDlKT/versions/XNtIBXyQ/TerraBlender-fabric-1.21.1-4.1.0.8.jar"
+    "trinkets" = "https://cdn.modrinth.com/data/5aaWibi9/versions/JagCscwi/trinkets-3.10.0.jar"
     # Ejemplo de cómo agregar más mods:
     # "sodium" = "https://cdn.modrinth.com/data/AANobbMI/versions/sodium-fabric-0.5.11.jar"
 }
