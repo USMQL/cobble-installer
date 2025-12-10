@@ -51,7 +51,7 @@ if ($seleccion -eq "e" -or $seleccion -eq "E") {
 
 # ================= LISTA DE MODS =================
 # URL del archivo JSON con la lista de mods en GitHub
-$ModListUrl = "https://raw.githubusercontent.com/USUARIO/REPOSITORIO/main/modlist.json"
+$ModListUrl = "https://raw.githubusercontent.com/USMQL/cobble-installer/refs/heads/main/modlist.json"
 
 Write-Host "Descargando lista de mods..." -ForegroundColor Yellow
 try {
