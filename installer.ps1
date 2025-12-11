@@ -181,9 +181,8 @@ foreach ($modEntry in $ModList.GetEnumerator()) {
     }
 }
 
-# 5. DESCARGAR Y APLICAR CARPETA CONFIG
+# 5. DESCARGAR Y APLICAR CONFIGURACIONES
 Write-Host "Descargando configuraciones..." -ForegroundColor Yellow
-$ConfigDir = "$InstancePath\config"
 $GitHubRepo = "USMQL/cobble-installer"
 $GitHubBranch = "main"
 
@@ -193,7 +192,8 @@ function Download-GitHubFolder {
         [string]$RepoPath,
         [string]$LocalPath,
         [string]$Repo,
-        [string]$Branch
+        [string]$Branch,
+        [bool]$SkipExisting = $false
     )
     
     $apiUrl = "https://api.github.com/repos/$Repo/contents/$RepoPath`?ref=$Branch"
@@ -212,6 +212,12 @@ function Download-GitHubFolder {
                 $downloadUrl = $item.download_url
                 $destinationPath = Join-Path $LocalPath $fileName
                 
+                # Si SkipExisting es true y el archivo ya existe, omitirlo
+                if ($SkipExisting -and (Test-Path $destinationPath)) {
+                    Write-Host "`r -> $RepoPath/$fileName (omitido, ya existe)                                    " -ForegroundColor DarkGray
+                    continue
+                }
+                
                 try {
                     Write-Host "`r -> $RepoPath/$fileName                                                 " -NoNewline -ForegroundColor Cyan
                     Invoke-WebRequest -Uri $downloadUrl -OutFile $destinationPath -TimeoutSec 30
@@ -227,26 +233,45 @@ function Download-GitHubFolder {
                 }
                 
                 # Llamada recursiva para subdirectorios
-                Download-GitHubFolder -RepoPath "$RepoPath/$subDirName" -LocalPath $subDirPath -Repo $Repo -Branch $Branch
+                Download-GitHubFolder -RepoPath "$RepoPath/$subDirName" -LocalPath $subDirPath -Repo $Repo -Branch $Branch -SkipExisting $SkipExisting
             }
         }
     } catch {
-        Write-Host " [!] Error accediendo a $RepoPath : $_" -ForegroundColor Red
+        Write-Host "`n [!] Error accediendo a $RepoPath : $_" -ForegroundColor Red
     }
 }
 
 try {
-    # Crear directorio config si no existe
-    if (!(Test-Path -Path $ConfigDir)) {
-        New-Item -ItemType Directory -Force -Path $ConfigDir | Out-Null
-    }
-
-    # Descargar carpeta config recursivamente
-    Download-GitHubFolder -RepoPath "config" -LocalPath $ConfigDir -Repo $GitHubRepo -Branch $GitHubBranch
+    # Lista de carpetas a descargar
+    $downloads = @(
+        @{ RepoPath = "config"; LocalPath = "$InstancePath\config"; SkipExisting = $false }
+    )
     
-    Write-Host "`r[OK] Configuraciones descargadas y aplicadas correctamente.                                  " -ForegroundColor Green
+    # Descargar carpetas
+    foreach ($download in $downloads) {
+        if (!(Test-Path -Path $download.LocalPath)) {
+            New-Item -ItemType Directory -Force -Path $download.LocalPath | Out-Null
+        }
+        Download-GitHubFolder -RepoPath $download.RepoPath -LocalPath $download.LocalPath -Repo $GitHubRepo -Branch $GitHubBranch -SkipExisting $download.SkipExisting
+    }
+    
+    # Descargar options.txt
+    try {
+        $optionsPath = "$InstancePath\options.txt"
+        if (Test-Path $optionsPath) {
+            Write-Host "`r -> options.txt (omitido, ya existe)                                                   " -ForegroundColor DarkGray
+        } else {
+            $optionsUrl = "https://raw.githubusercontent.com/$GitHubRepo/$GitHubBranch/options.txt"
+            Write-Host "`r -> options.txt                                                                        " -NoNewline -ForegroundColor Cyan
+            Invoke-WebRequest -Uri $optionsUrl -OutFile $optionsPath -TimeoutSec 30
+        }
+    } catch {
+        # Si options.txt no existe en el repo, no es un error crítico
+    }
+    
+    Write-Host "`r[OK] Configuraciones y recursos descargados correctamente.                                     " -ForegroundColor Green
 } catch {
-    Write-Host " (sin config)" -ForegroundColor Gray
+    Write-Host "`n[AVISO] Algunos recursos no pudieron descargarse" -ForegroundColor Yellow
 }
 
 # 6. CONFIGURAR LAUNCHER_PROFILES.JSON
@@ -278,9 +303,8 @@ if (Test-Path $ProfilesFile) {
     $CrearNuevoPerfil = $true
 
     if ($PerfilExiste) {
-        Write-Host ""
-        Write-Host "Se detectó un perfil existente de '$ProfileName'." -ForegroundColor Yellow
-        Write-Host "Actualizando perfil con la nueva configuración..." -ForegroundColor Cyan
+        Write-Host " Se detectó un perfil existente de '$ProfileName'." -ForegroundColor DarkYellow
+        Write-Host " Actualizando perfil con la nueva configuración..." -ForegroundColor Yellow
         
         $CrearNuevoPerfil = $false
         
@@ -304,6 +328,10 @@ if (Test-Path $ProfilesFile) {
             lastUsed      = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
             lastVersionId = $FabricVersionID
             name          = $ProfileName
+            resolution    = [PSCustomObject]@{
+                height = 900
+                width  = 1600
+            }
             type          = "custom"
             gameDir       = $InstancePath
         }
