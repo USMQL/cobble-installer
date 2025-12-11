@@ -26,6 +26,21 @@
     "resourcefullib-fabric": "https://cdn.modrinth.com/data/G1hIVOrD/versions/Hf91FuVF/resourcefullib-fabric-1.21-3.0.12.jar",
     "chipped-fabric": "https://cdn.modrinth.com/data/BAscRYKm/versions/6h2mVZcb/chipped-fabric-1.21.1-4.0.2.jar",
     "CobbleFurnies-fabric": "https://cdn.modrinth.com/data/AXY1OO9m/versions/FeaNqZjR/CobbleFurnies-fabric-1.0.jar",
-    "LegendaryMonuments": "https://cdn.modrinth.com/data/m6RyHSbV/versions/3Tk6TfFB/LegendaryMonuments-7.4.jar"
+    "LegendaryMonuments": "https://cdn.modrinth.com/data/m6RyHSbV/versions/3Tk6TfFB/LegendaryMonuments-7.4.jar",
+    "fancymenu_fabric": "https://cdn.modrinth.com/data/Wq5SjeWM/versions/6V6kRZzL/fancymenu_fabric_3.8.1_MC_1.21.1.jar",
+    "konkrete_fabric": "https://cdn.modrinth.com/data/J81TRJWm/versions/Qvrc7DuG/konkrete_fabric_1.9.9_MC_1.21.jar",
+    "melody_fabric": "https://cdn.modrinth.com/data/CVT4pFB2/versions/OqxSeb4n/melody_fabric_1.0.10_MC_1.21.jar",
+    "modmenu": "https://cdn.modrinth.com/data/mOgUt4GM/versions/YIfqIJ8q/modmenu-11.0.3.jar",
+    "placeholder-api": "https://cdn.modrinth.com/data/eXts2L7r/versions/U5bhVym2/placeholder-api-2.4.2+1.21.jar",
+    "sodium-fabric": "https://cdn.modrinth.com/data/AANobbMI/versions/u1OEbNKx/sodium-fabric-0.6.13+mc1.21.1.jar",
+    "lithium-fabric": "https://cdn.modrinth.com/data/gvQqBUqZ/versions/E5eJVp4O/lithium-fabric-0.15.1%2Bmc1.21.1.jar",
+    "language-reload": "https://cdn.modrinth.com/data/uLbm7CG6/versions/jCM93jJ5/language-reload-1.7.5%2B1.21.1.jar",
+    "lambdynamiclights": "https://cdn.modrinth.com/data/yBW8D80W/versions/CQuTG9xY/lambdynamiclights-4.8.7%2B1.21.1.jar",
+    "chat_heads": "https://cdn.modrinth.com/data/Wb5oqrBJ/versions/9dRmYosQ/chat_heads-0.14.2-fabric-1.21.jar",
+    "cloth-config": "https://cdn.modrinth.com/data/9s6osm5g/versions/HpMb5wGb/cloth-config-15.0.140-fabric.jar",
+    "notenoughanimations-fabric": "https://cdn.modrinth.com/data/MPCX6s5C/versions/kaNdqksl/notenoughanimations-fabric-1.10.6-mc1.21.1.jar",
+    "ImmediatelyFast-Fabric": "https://cdn.modrinth.com/data/5ZwdcRci/versions/uA4KLlrL/ImmediatelyFast-Fabric-1.6.8%2B1.21.1.jar",
+    "entityculling-fabric": "https://cdn.modrinth.com/data/NNAgCjsB/versions/K4vXrboK/entityculling-fabric-1.9.3-mc1.21.1.jar",
+    "ferritecore": "https://cdn.modrinth.com/data/uXXizFIs/versions/bwKMSBhn/ferritecore-7.0.2-hotfix-fabric.jar"
   }
 }
