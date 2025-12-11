@@ -49,31 +49,6 @@ if ($seleccion -eq "e" -or $seleccion -eq "E") {
     Write-Host "Usando ruta por defecto." -ForegroundColor Green
 }
 
-# ================= LISTA DE MODS =================
-# URL del archivo JSON con la lista de mods en GitHub
-$ModListUrl = "https://raw.githubusercontent.com/USMQL/cobble-installer/refs/heads/main/modlist.json"
-
-Write-Host "Cargando lista de mods..." -ForegroundColor Yellow -NoNewline
-try {
-    $webClient = New-Object System.Net.WebClient
-    $webClient.Encoding = [System.Text.Encoding]::UTF8
-    $modListJson = $webClient.DownloadString($ModListUrl)
-    $modListData = $modListJson | ConvertFrom-Json
-    $ModList = @{}
-    
-    # Convertir el objeto JSON a hashtable
-    foreach ($property in $modListData.mods.PSObject.Properties) {
-        $ModList[$property.Name] = $property.Value
-    }
-    
-    Write-Host " OK ($($ModList.Count) mods)" -ForegroundColor Green
-} catch {
-    Write-Host " ERROR" -ForegroundColor Red
-    Write-Host "No se pudo descargar la lista de mods: $_" -ForegroundColor Red
-    Pause
-    Exit
-}
-
 # ================= INICIO DE INSTALACIÓN =================
 Write-Host ""
 Write-Host "--- Iniciando Instalación en: $InstancePath ---" -ForegroundColor Cyan
@@ -134,6 +109,32 @@ if (!(Test-Path -Path $ModsDir)) {
 }
 
 # 4. DESCARGAR MODS
+
+# ================= LISTA DE MODS =================
+# URL del archivo JSON con la lista de mods en GitHub
+$ModListUrl = "https://raw.githubusercontent.com/USMQL/cobble-installer/refs/heads/main/modlist.json"
+
+Write-Host "Cargando lista de mods..." -ForegroundColor Yellow -NoNewline
+try {
+    $webClient = New-Object System.Net.WebClient
+    $webClient.Encoding = [System.Text.Encoding]::UTF8
+    $modListJson = $webClient.DownloadString($ModListUrl)
+    $modListData = $modListJson | ConvertFrom-Json
+    $ModList = @{}
+    
+    # Convertir el objeto JSON a hashtable
+    foreach ($property in $modListData.mods.PSObject.Properties) {
+        $ModList[$property.Name] = $property.Value
+    }
+    
+    Write-Host " OK ($($ModList.Count) mods)" -ForegroundColor Green
+} catch {
+    Write-Host " ERROR" -ForegroundColor Red
+    Write-Host "No se pudo descargar la lista de mods: $_" -ForegroundColor Red
+    Pause
+    Exit
+}
+
 Write-Host "`nDescargando Mods..." -ForegroundColor Yellow
 $modIndex = 0
 $totalMods = $ModList.Count
@@ -153,38 +154,35 @@ foreach ($modEntry in $ModList.GetEnumerator()) {
         # Buscar si existe algún archivo que comience con el nombre base del mod
         $existingMods = Get-ChildItem -Path $ModsDir -Filter "$modBaseName*.jar" -ErrorAction SilentlyContinue
         
-        Write-Progress -Activity "Descargando Mods..." -Status "[$modIndex/$totalMods] $modBaseName"
-        
         if ($existingMods) {
             # Verificar si ya existe exactamente el mismo archivo
             $exactMatch = $existingMods | Where-Object { $_.Name -eq $fileName }
             
             if ($exactMatch) {
-                Write-Host " -> Ya existe: $fileName (Omitiendo)" -ForegroundColor DarkGray
+                Write-Host "[$modIndex/$totalMods] Ya existe: $fileName (Omitiendo)" -ForegroundColor DarkGray
             } else {
                 # Existe una versión diferente, eliminarla y descargar la nueva
                 foreach ($oldMod in $existingMods) {
-                    Write-Host " -> Eliminando versión antigua: $($oldMod.Name)" -ForegroundColor Yellow
+                    Write-Host "[$modIndex/$totalMods] Eliminando versión antigua: $($oldMod.Name)" -ForegroundColor Yellow
                     Remove-Item $oldMod.FullName -Force
                 }
-                Write-Host " -> Descargando nueva versión: $fileName" -ForegroundColor Cyan
+                Write-Host "[$modIndex/$totalMods] Descargando nueva versión: $fileName" -ForegroundColor Cyan
                 Invoke-WebRequest -Uri $url -OutFile $fullPath
-                Write-Host " -> [OK] $fileName descargado" -ForegroundColor Green
+                Write-Host "[$modIndex/$totalMods] [OK] $fileName descargado" -ForegroundColor Green
             }
         } else {
             # No existe ninguna versión del mod, descargarlo
-            Write-Host " -> Descargando: $fileName" -ForegroundColor Cyan
+            Write-Host "[$modIndex/$totalMods] Descargando: $fileName" -ForegroundColor Cyan
             Invoke-WebRequest -Uri $url -OutFile $fullPath
-            Write-Host " -> [OK] $fileName descargado" -ForegroundColor Green
+            Write-Host "[$modIndex/$totalMods] [OK] $fileName descargado" -ForegroundColor Green
         }
     } catch {
         Write-Host " [!] Error procesando $($modEntry.Key): $_" -ForegroundColor Red
     }
 }
-Write-Progress -Activity "Descargando Mods..." -Completed
 
 # 5. DESCARGAR Y APLICAR CARPETA CONFIG
-Write-Host "Descargando configuraciones..." -ForegroundColor Yellow -NoNewline
+Write-Host "Descargando configuraciones..." -ForegroundColor Yellow
 $ConfigDir = "$InstancePath\config"
 $GitHubRepo = "USMQL/cobble-installer"
 $GitHubBranch = "main"
@@ -207,8 +205,6 @@ function Download-GitHubFolder {
         $response = Invoke-RestMethod -Uri $apiUrl -Headers @{
             "User-Agent" = "PowerShell-Minecraft-Installer"
         } -TimeoutSec 30
-        
-        Write-Progress -Activity "Descargando configuraciones..." -Status "-> $RepoPath"
 
         foreach ($item in $response) {
             if ($item.type -eq "file") {
@@ -217,10 +213,10 @@ function Download-GitHubFolder {
                 $destinationPath = Join-Path $LocalPath $fileName
                 
                 try {
-                    Write-Progress -Activity "Descargando configuraciones..." -Status "-> $RepoPath/$fileName"
+                    Write-Host "`r -> $RepoPath/$fileName                                                 " -NoNewline -ForegroundColor Cyan
                     Invoke-WebRequest -Uri $downloadUrl -OutFile $destinationPath -TimeoutSec 30
                 } catch {
-                    Write-Host " [!] Error descargando $fileName : $_" -ForegroundColor Red
+                    Write-Host "`n [!] Error descargando $fileName : $_" -ForegroundColor Red
                 }
             } elseif ($item.type -eq "dir") {
                 $subDirName = $item.name
@@ -237,7 +233,6 @@ function Download-GitHubFolder {
     } catch {
         Write-Host " [!] Error accediendo a $RepoPath : $_" -ForegroundColor Red
     }
-    Write-Progress -Activity "Descargando configuraciones..." -Completed
 }
 
 try {
@@ -249,8 +244,7 @@ try {
     # Descargar carpeta config recursivamente
     Download-GitHubFolder -RepoPath "config" -LocalPath $ConfigDir -Repo $GitHubRepo -Branch $GitHubBranch
     
-    Write-Host " OK" -ForegroundColor Green
-    Write-Host "Configuraciones descargadas y aplicadas correctamente" -ForegroundColor Green
+    Write-Host "`r[OK] Configuraciones descargadas y aplicadas correctamente.                                  " -ForegroundColor Green
 } catch {
     Write-Host " (sin config)" -ForegroundColor Gray
 }
@@ -306,6 +300,7 @@ if (Test-Path $ProfilesFile) {
         $NewProfile = [PSCustomObject]@{
             created       = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
             icon          = "Grass"
+            javaArgs      = "-Xmx4G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M"
             lastUsed      = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
             lastVersionId = $FabricVersionID
             name          = $ProfileName
