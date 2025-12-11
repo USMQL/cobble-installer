@@ -13,9 +13,9 @@ Add-Type -AssemblyName System.Windows.Forms
 
 # ================= SELECCIÓN DE RUTA =================
 Clear-Host
-Write-Host "===================================================" -ForegroundColor Cyan
-Write-Host "      INSTALADOR DE MODPACK - $ProfileName   " -ForegroundColor Cyan
-Write-Host "===================================================" -ForegroundColor Cyan
+Write-Host "==============================================================================" -ForegroundColor Cyan
+Write-Host "      INSTALADOR DE MODPACK - POKEMON: LAST SEMESTER - [$ProfileName]   " -ForegroundColor Cyan
+Write-Host "==============================================================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Ruta de instalación por defecto:" -ForegroundColor Yellow
 Write-Host "   $DefaultInstancePath" -ForegroundColor White
