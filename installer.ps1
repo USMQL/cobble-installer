@@ -136,6 +136,11 @@ foreach ($modEntry in $ModList.GetEnumerator()) {
         $modBaseName = $modEntry.Key
         $url = $modEntry.Value
         $fileName = [System.IO.Path]::GetFileName($url)
+        
+        if ($fileName -notlike "*.jar" -or $fileName -eq "download") {
+            $fileName = "$modBaseName-$(Get-Date -Format 'yyyyMMdd').jar"
+        }
+
         $fullPath = "$ModsDir\$fileName"
         
         # Buscar si existe algún archivo que comience con el nombre base del mod
