@@ -53,7 +53,7 @@ if ($seleccion -eq "e" -or $seleccion -eq "E") {
 # URL del archivo JSON con la lista de mods en GitHub
 $ModListUrl = "https://raw.githubusercontent.com/USMQL/cobble-installer/refs/heads/main/modlist.json"
 
-Write-Host "Descargando lista de mods..." -ForegroundColor Yellow
+Write-Host "Cargando lista de mods..." -ForegroundColor Yellow -NoNewline
 try {
     $webClient = New-Object System.Net.WebClient
     $webClient.Encoding = [System.Text.Encoding]::UTF8
@@ -66,9 +66,10 @@ try {
         $ModList[$property.Name] = $property.Value
     }
     
-    Write-Host "[OK] Lista de mods cargada: $($ModList.Count) mod(s)" -ForegroundColor Green
+    Write-Host " OK ($($ModList.Count) mods)" -ForegroundColor Green
 } catch {
-    Write-Host "[ERROR] No se pudo descargar la lista de mods: $_" -ForegroundColor Red
+    Write-Host " ERROR" -ForegroundColor Red
+    Write-Host "No se pudo descargar la lista de mods: $_" -ForegroundColor Red
     Pause
     Exit
 }
@@ -78,18 +79,20 @@ Write-Host ""
 Write-Host "--- Iniciando Instalación en: $InstancePath ---" -ForegroundColor Cyan
 
 # 1. VERIFICAR JAVA
+Write-Host "Verificando Java..." -ForegroundColor Yellow -NoNewline
 try {
     $javaVer = java -version 2>&1
     if ($LASTEXITCODE -ne 0) { throw "Java no detectado." }
-    Write-Host "[OK] Java detectado." -ForegroundColor Green
+    Write-Host " OK" -ForegroundColor Green
 } catch {
-    Write-Host "[ERROR] Java no está instalado o no está en el PATH." -ForegroundColor Red
+    Write-Host " ERROR" -ForegroundColor Red
+    Write-Host "Java no está instalado o no está en el PATH." -ForegroundColor Red
     Pause
     Exit
 }
 
 # 2. VERIFICAR E INSTALAR FABRIC
-Write-Host "Verificando instalación de Fabric..." -ForegroundColor Yellow
+Write-Host "Verificando Fabric..." -ForegroundColor Yellow -NoNewline
 $FabricVersionID = "fabric-loader-$FabricLoaderVer-$MinecraftVer"
 $FabricVersionPath = "$MinecraftRoot\versions\$FabricVersionID"
 $FabricJsonFile = "$FabricVersionPath\$FabricVersionID.json"
@@ -97,9 +100,10 @@ $FabricJsonFile = "$FabricVersionPath\$FabricVersionID.json"
 $FabricYaInstalado = Test-Path $FabricJsonFile
 
 if ($FabricYaInstalado) {
-    Write-Host "[OK] Fabric $FabricVersionID ya está instalado. Saltando instalación." -ForegroundColor Green
+    Write-Host " OK" -ForegroundColor Green
+    Write-Host "$FabricVersionID ya está instalado. Omitiendo instalación." -ForegroundColor Green
 } else {
-    Write-Host "Fabric no encontrado. Descargando e instalando..." -ForegroundColor Yellow
+    Write-Host " Instalando..." -ForegroundColor Yellow
     $FabricInstallerUrl = "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar"
     $InstallerPath = "$env:TEMP\fabric-installer.jar"
 
@@ -110,7 +114,7 @@ if ($FabricYaInstalado) {
         $installArgs = "-jar `"$InstallerPath`" client -dir `"$MinecraftRoot`" -mcversion $MinecraftVer -loader $FabricLoaderVer -noprofile"
         Start-Process -FilePath "java" -ArgumentList $installArgs -Wait -NoNewWindow
         
-        Write-Host "[OK] Fabric instalado correctamente" -ForegroundColor Green
+        Write-Host "[OK] $FabricVersionID instalado correctamente" -ForegroundColor Green
     } catch {
         Write-Host "[ERROR] Fallo al instalar Fabric: $_" -ForegroundColor Red
         Exit
@@ -130,8 +134,11 @@ if (!(Test-Path -Path $ModsDir)) {
 }
 
 # 4. DESCARGAR MODS
-Write-Host "Descargando Mods..." -ForegroundColor Yellow
+Write-Host "`nDescargando Mods..." -ForegroundColor Yellow
+$modIndex = 0
+$totalMods = $ModList.Count
 foreach ($modEntry in $ModList.GetEnumerator()) {
+    $modIndex++
     try {
         $modBaseName = $modEntry.Key
         $url = $modEntry.Value
@@ -146,12 +153,14 @@ foreach ($modEntry in $ModList.GetEnumerator()) {
         # Buscar si existe algún archivo que comience con el nombre base del mod
         $existingMods = Get-ChildItem -Path $ModsDir -Filter "$modBaseName*.jar" -ErrorAction SilentlyContinue
         
+        Write-Progress -Activity "Descargando Mods..." -Status "[$modIndex/$totalMods] $modBaseName"
+        
         if ($existingMods) {
             # Verificar si ya existe exactamente el mismo archivo
             $exactMatch = $existingMods | Where-Object { $_.Name -eq $fileName }
             
             if ($exactMatch) {
-                Write-Host " -> Ya existe: $fileName (Saltando)" -ForegroundColor Gray
+                Write-Host " -> Ya existe: $fileName (Omitiendo)" -ForegroundColor DarkGray
             } else {
                 # Existe una versión diferente, eliminarla y descargar la nueva
                 foreach ($oldMod in $existingMods) {
@@ -172,9 +181,82 @@ foreach ($modEntry in $ModList.GetEnumerator()) {
         Write-Host " [!] Error procesando $($modEntry.Key): $_" -ForegroundColor Red
     }
 }
+Write-Progress -Activity "Descargando Mods..." -Completed
 
-# 5. CONFIGURAR LAUNCHER_PROFILES.JSON
-Write-Host "Gestionando perfil del Launcher..." -ForegroundColor Yellow
+# 5. DESCARGAR Y APLICAR CARPETA CONFIG
+Write-Host "Descargando configuraciones..." -ForegroundColor Yellow -NoNewline
+$ConfigDir = "$InstancePath\config"
+$GitHubRepo = "USMQL/cobble-installer"
+$GitHubBranch = "main"
+
+# Función recursiva para descargar contenido de carpetas
+function Download-GitHubFolder {
+    param(
+        [string]$RepoPath,
+        [string]$LocalPath,
+        [string]$Repo,
+        [string]$Branch
+    )
+    
+    $apiUrl = "https://api.github.com/repos/$Repo/contents/$RepoPath`?ref=$Branch"
+    
+    try {
+        # Pequeña pausa para evitar rate limiting
+        Start-Sleep -Milliseconds 500
+        
+        $response = Invoke-RestMethod -Uri $apiUrl -Headers @{
+            "User-Agent" = "PowerShell-Minecraft-Installer"
+        } -TimeoutSec 30
+        
+        Write-Progress -Activity "Descargando configuraciones..." -Status "-> $RepoPath"
+
+        foreach ($item in $response) {
+            if ($item.type -eq "file") {
+                $fileName = $item.name
+                $downloadUrl = $item.download_url
+                $destinationPath = Join-Path $LocalPath $fileName
+                
+                try {
+                    Write-Progress -Activity "Descargando configuraciones..." -Status "-> $RepoPath/$fileName"
+                    Invoke-WebRequest -Uri $downloadUrl -OutFile $destinationPath -TimeoutSec 30
+                } catch {
+                    Write-Host " [!] Error descargando $fileName : $_" -ForegroundColor Red
+                }
+            } elseif ($item.type -eq "dir") {
+                $subDirName = $item.name
+                $subDirPath = Join-Path $LocalPath $subDirName
+                
+                if (!(Test-Path -Path $subDirPath)) {
+                    New-Item -ItemType Directory -Force -Path $subDirPath | Out-Null
+                }
+                
+                # Llamada recursiva para subdirectorios
+                Download-GitHubFolder -RepoPath "$RepoPath/$subDirName" -LocalPath $subDirPath -Repo $Repo -Branch $Branch
+            }
+        }
+    } catch {
+        Write-Host " [!] Error accediendo a $RepoPath : $_" -ForegroundColor Red
+    }
+    Write-Progress -Activity "Descargando configuraciones..." -Completed
+}
+
+try {
+    # Crear directorio config si no existe
+    if (!(Test-Path -Path $ConfigDir)) {
+        New-Item -ItemType Directory -Force -Path $ConfigDir | Out-Null
+    }
+
+    # Descargar carpeta config recursivamente
+    Download-GitHubFolder -RepoPath "config" -LocalPath $ConfigDir -Repo $GitHubRepo -Branch $GitHubBranch
+    
+    Write-Host " OK" -ForegroundColor Green
+    Write-Host "Configuraciones descargadas y aplicadas correctamente" -ForegroundColor Green
+} catch {
+    Write-Host " (sin config)" -ForegroundColor Gray
+}
+
+# 6. CONFIGURAR LAUNCHER_PROFILES.JSON
+Write-Host "Configurando perfil..." -ForegroundColor Yellow
 $ProfilesFile = "$MinecraftRoot\launcher_profiles.json"
 $BackupFile = "$MinecraftRoot\launcher_profiles_backup.json"
 
@@ -203,7 +285,7 @@ if (Test-Path $ProfilesFile) {
 
     if ($PerfilExiste) {
         Write-Host ""
-        Write-Host "Se detectó un perfil existente llamado '$ProfileName'." -ForegroundColor Yellow
+        Write-Host "Se detectó un perfil existente de '$ProfileName'." -ForegroundColor Yellow
         Write-Host "Actualizando perfil con la nueva configuración..." -ForegroundColor Cyan
         
         $CrearNuevoPerfil = $false
@@ -239,8 +321,17 @@ if (Test-Path $ProfilesFile) {
 
 } else {
     Write-Host "[ERROR] No se encontró launcher_profiles.json." -ForegroundColor Red
+    Write-Host "Esto se debe a que no hay una instalación previa de Minecraft Launcher." -ForegroundColor Red
+    Write-Host "Si utilizas un launcher alternativo, puedes crear un perfil manualmente que apunte a la carpeta de la instancia." -ForegroundColor Red
+    Write-Host "Configura el perfil con:" -ForegroundColor Red
+    Write-Host "  - Nombre: $ProfileName" -ForegroundColor Red
+    Write-Host "  - Versión: $FabricVersionID" -ForegroundColor Red
+    Write-Host "  - Carpeta de juego: $InstancePath" -ForegroundColor Red
 }
 
-Write-Host "--- Instalación Completada ---" -ForegroundColor Cyan
-Write-Host "Abre o reinicia tu Minecraft Launcher y selecciona el perfil: $ProfileName"
+Write-Host "`n=============================================================================="
+Write-Host "Instalación Completada" -ForegroundColor Green
+Write-Host "=============================================================================="
+Write-Host "Abre o reinicia Minecraft Launcher y selecciona el perfil: $ProfileName" -ForegroundColor Cyan
+Write-Host ""
 Pause
