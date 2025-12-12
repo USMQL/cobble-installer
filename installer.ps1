@@ -61,37 +61,62 @@ try {
     Write-Host " OK" -ForegroundColor Green
 } catch {
     Write-Host " No detectado" -ForegroundColor Yellow
-    Write-Host "Java no está instalado. Descargando e instalando Java 21..." -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host " Java no está instalado. Descargando e instalando Java 21..." -ForegroundColor Cyan
     
     try {
-        # Descargar instalador de Java 21 (Microsoft Build of OpenJDK)
-        $JavaInstallerUrl = "https://aka.ms/download-jdk/microsoft-jdk-21.0.5-windows-x64.msi"
-        $JavaInstallerPath = "$env:TEMP\jdk-21-installer.msi"
+        # Descargar instalador portable de Java 21 (ZIP)
+        $JavaZipUrl = "https://aka.ms/download-jdk/microsoft-jdk-21.0.5-windows-x64.zip"
+        $JavaZipPath = "$env:TEMP\jdk-21.zip"
+        $JavaInstallDir = "$env:LOCALAPPDATA\Java\jdk-21"
         
-        Write-Host "Descargando Java 21..." -ForegroundColor Yellow
-        Invoke-WebRequest -Uri $JavaInstallerUrl -OutFile $JavaInstallerPath
+        Write-Host " Descargando Java 21 (portable)..." -ForegroundColor Yellow
+        Invoke-WebRequest -Uri $JavaZipUrl -OutFile $JavaZipPath -UseBasicParsing
         
-        Write-Host "Instalando Java 21 (esto puede tardar unos minutos)..." -ForegroundColor Yellow
-        Start-Process -FilePath "msiexec.exe" -ArgumentList "/i `"$JavaInstallerPath`" /quiet /norestart" -Wait -NoNewWindow
+        Write-Host " Extrayendo Java 21..." -ForegroundColor Yellow
         
-        # Actualizar la variable PATH para la sesión actual
-        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-        
-        # Verificar instalación
-        Start-Sleep -Seconds 2
-        $javaVerCheck = java -version 2>&1
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "[OK] Java 21 instalado correctamente" -ForegroundColor Green
-        } else {
-            throw "Java se instaló pero no se detecta en el PATH. Reinicia la terminal o el sistema."
+        if (!(Test-Path -Path $JavaInstallDir)) {
+            New-Item -ItemType Directory -Force -Path $JavaInstallDir | Out-Null
         }
         
-        # Limpiar instalador
-        Remove-Item $JavaInstallerPath -Force -ErrorAction SilentlyContinue
+        # Extraer el ZIP
+        Expand-Archive -Path $JavaZipPath -DestinationPath "$env:LOCALAPPDATA\Java" -Force
+        
+        # Buscar el directorio real del JDK
+        $jdkFolder = Get-ChildItem -Path "$env:LOCALAPPDATA\Java" -Directory | Where-Object { $_.Name -like "jdk-21*" } | Select-Object -First 1
+        
+        if ($jdkFolder) {
+            $JavaBinPath = "$($jdkFolder.FullName)\bin"
+            
+            # Agregar Java al PATH del usuario (permanente)
+            $currentUserPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
+            if ($currentUserPath -notlike "*$JavaBinPath*") {
+                [System.Environment]::SetEnvironmentVariable("Path", "$currentUserPath;$JavaBinPath", "User")
+            }
+            
+            # Actualizar PATH para la sesión actual
+            $env:Path = "$env:Path;$JavaBinPath"
+            
+            Write-Host "[OK] Java 21 instalado correctamente en: $($jdkFolder.FullName)" -ForegroundColor Green
+            Write-Host ""
+            Write-Host "[AVISO] Java se instaló correctamente." -ForegroundColor Yellow
+            Write-Host "Por favor, cierra esta ventana y ejecuta el instalador nuevamente para que se detecte Java." -ForegroundColor Yellow
+            
+            # Limpiar archivo temporal
+            Remove-Item $JavaZipPath -Force -ErrorAction SilentlyContinue
+            
+            Pause
+            Exit
+        } else {
+            throw "No se encontró el directorio de Java después de la extracción"
+        }
     } catch {
+        Write-Host ""
         Write-Host "[ERROR] No se pudo instalar Java automáticamente: $_" -ForegroundColor Red
+        Write-Host ""
         Write-Host "Por favor, descarga e instala Java 21 manualmente desde:" -ForegroundColor Yellow
         Write-Host "https://learn.microsoft.com/java/openjdk/download" -ForegroundColor Cyan
+        Write-Host ""
         Pause
         Exit
     }
