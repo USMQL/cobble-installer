@@ -60,10 +60,41 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Java no detectado." }
     Write-Host " OK" -ForegroundColor Green
 } catch {
-    Write-Host " ERROR" -ForegroundColor Red
-    Write-Host "Java no está instalado o no está en el PATH." -ForegroundColor Red
-    Pause
-    Exit
+    Write-Host " No detectado" -ForegroundColor Yellow
+    Write-Host "Java no está instalado. Descargando e instalando Java 21..." -ForegroundColor Cyan
+    
+    try {
+        # Descargar instalador de Java 21 (Microsoft Build of OpenJDK)
+        $JavaInstallerUrl = "https://aka.ms/download-jdk/microsoft-jdk-21.0.5-windows-x64.msi"
+        $JavaInstallerPath = "$env:TEMP\jdk-21-installer.msi"
+        
+        Write-Host "Descargando Java 21..." -ForegroundColor Yellow
+        Invoke-WebRequest -Uri $JavaInstallerUrl -OutFile $JavaInstallerPath
+        
+        Write-Host "Instalando Java 21 (esto puede tardar unos minutos)..." -ForegroundColor Yellow
+        Start-Process -FilePath "msiexec.exe" -ArgumentList "/i `"$JavaInstallerPath`" /quiet /norestart" -Wait -NoNewWindow
+        
+        # Actualizar la variable PATH para la sesión actual
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+        
+        # Verificar instalación
+        Start-Sleep -Seconds 2
+        $javaVerCheck = java -version 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[OK] Java 21 instalado correctamente" -ForegroundColor Green
+        } else {
+            throw "Java se instaló pero no se detecta en el PATH. Reinicia la terminal o el sistema."
+        }
+        
+        # Limpiar instalador
+        Remove-Item $JavaInstallerPath -Force -ErrorAction SilentlyContinue
+    } catch {
+        Write-Host "[ERROR] No se pudo instalar Java automáticamente: $_" -ForegroundColor Red
+        Write-Host "Por favor, descarga e instala Java 21 manualmente desde:" -ForegroundColor Yellow
+        Write-Host "https://learn.microsoft.com/java/openjdk/download" -ForegroundColor Cyan
+        Pause
+        Exit
+    }
 }
 
 # 2. VERIFICAR E INSTALAR FABRIC
