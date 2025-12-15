@@ -45,6 +45,14 @@
     "CobblemonSizeVariationFabric": "https://cdn.modrinth.com/data/bMdS1gMo/versions/cJf7Izms/CobblemonSizeVariationFabric-1.4.0%2B1.7.0.jar",
     "Xaeros_Minimap": "https://cdn.modrinth.com/data/1bokaNcj/versions/IaH8q5hM/Xaeros_Minimap_25.2.10_Fabric_1.21.jar",
     "CobblemonShinyRarities": "https://cdn.modrinth.com/data/jYjYV1Jb/versions/wCC23eYr/CobblemonShinyRarities-0.1.0.jar",
-    "ftb-library-fabric": "https://www.curseforge.com/api/v1/mods/438495/files/7312255/download"
+    "ftb-library-fabric": "https://www.curseforge.com/api/v1/mods/438495/files/7312255/download",
+    "Terrastorage":"https://cdn.modrinth.com/data/QKXofFZC/versions/PGVQeC0C/Terrastorage-1.2.7%2B1.21-1.21.1.jar",
+    "cobblenav-fabric":"https://cdn.modrinth.com/data/bI8Nt3uA/versions/VjtSuwwW/cobblenav-fabric-2.2.5.jar",
+    "tmcraft":"https://cdn.modrinth.com/data/HU6mkUZs/versions/bqTQ8if8/tmcraft-1.4.18%2B1.7.1.jar",
+    "SimpleTMs-fabric":"https://cdn.modrinth.com/data/yFqR0DNc/versions/uWiIETYV/SimpleTMs-fabric-2.3.3.jar",
+    "rctapi-fabric":"https://cdn.modrinth.com/data/CBfM2yw7/versions/mpyupO4W/rctapi-fabric-1.21.1-0.14.4-beta.jar",
+    "rctmod-fabric":"https://cdn.modrinth.com/data/lRwTUnD7/versions/6WnjrnPQ/rctmod-fabric-1.21.1-0.17.4-beta.jar",
+    "fabric-language-kotlin":"https://cdn.modrinth.com/data/Ha28R6CL/versions/LcgnDDmT/fabric-language-kotlin-1.13.7%2Bkotlin.2.2.21.jar",
+    "Cobbreeding-fabric":"https://cdn.modrinth.com/data/ItmVb4zY/versions/txiMM5yA/Cobbreeding-fabric-2.1.1.jar"
   }
 }
