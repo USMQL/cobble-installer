@@ -53,6 +53,7 @@
     "rctapi-fabric":"https://cdn.modrinth.com/data/CBfM2yw7/versions/mpyupO4W/rctapi-fabric-1.21.1-0.14.4-beta.jar",
     "rctmod-fabric":"https://cdn.modrinth.com/data/lRwTUnD7/versions/6WnjrnPQ/rctmod-fabric-1.21.1-0.17.4-beta.jar",
     "fabric-language-kotlin":"https://cdn.modrinth.com/data/Ha28R6CL/versions/LcgnDDmT/fabric-language-kotlin-1.13.7%2Bkotlin.2.2.21.jar",
-    "Cobbreeding-fabric":"https://cdn.modrinth.com/data/ItmVb4zY/versions/txiMM5yA/Cobbreeding-fabric-2.1.1.jar"
+    "Cobbreeding-fabric":"https://cdn.modrinth.com/data/ItmVb4zY/versions/txiMM5yA/Cobbreeding-fabric-2.1.1.jar",
+    "modernfix-fabric": "https://cdn.modrinth.com/data/nmDcB62a/versions/NnNX8LBn/modernfix-fabric-5.25.1+mc1.21.1.jar"
   }
 }
