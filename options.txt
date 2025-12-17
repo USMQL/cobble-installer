@@ -162,6 +162,9 @@ key_key.jei.closeRecipeGui:key.keyboard.escape
 key_key.jei.copy.recipe.id:key.keyboard.unknown
 key_terrastorage.keybinding.favorite_item_modifier:key.keyboard.l
 key_terrastorage.keybinding.sort_inventory_bind:key.keyboard.k
+key_key.cobblemonraiddens.mouse:key.keyboard.right.alt
+key_key.cobblemonraiddens.accept:key.keyboard.i
+key_gui.xaero_open_map:key.keyboard.comma
 key_key.modmenu.open_menu:key.keyboard.unknown
 key_lambdynlights.key.toggle_fps_dynamic_lighting:key.keyboard.unknown
 soundCategory_master:1.0
