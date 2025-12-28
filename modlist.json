@@ -65,6 +65,8 @@
     "Jade": "https://cdn.modrinth.com/data/nvQzSEkH/versions/PtcHhnOY/Jade-1.21.1-Fabric-15.10.2.jar",
     "no_field_breaking": "https://cdn.modrinth.com/data/96nj4UV6/versions/jeaxnck9/no_field_breaking-1.0.0.jar",
     "cobblemon-secret-base-trainer": "https://cdn.modrinth.com/data/medEuFrY/versions/Qq4wJjB4/cobblemon-secret-base-trainer-1.2.7.jar",
-    "Cobblemon-Trials-Edition": "https://cdn.modrinth.com/data/oH4pigcS/versions/heWeqYpc/Cobblemon-Trials-Edition-1.0.0.jar"
+    "Cobblemon-Trials-Edition": "https://cdn.modrinth.com/data/oH4pigcS/versions/heWeqYpc/Cobblemon-Trials-Edition-1.0.0.jar",
+    "cobblemon-trainer-battle" : "https://cdn.modrinth.com/data/pwjgeBtv/versions/34zxmLIU/cobblemon-trainer-battle-1.11.1%2B1.7.1.jar",
+    "easy_npc-fabric" : "https://cdn.modrinth.com/data/CgGEe1h3/versions/Gx8eh5qJ/easy_npc-fabric-1.21.1-5.9.0.jar"
   }
 }
