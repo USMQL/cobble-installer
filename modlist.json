@@ -16,11 +16,11 @@
     "GlitchCore": "https://cdn.modrinth.com/data/s3dmwKy5/versions/lbSHOhee/GlitchCore-fabric-1.21.1-2.1.0.0.jar",
     "jei": "https://cdn.modrinth.com/data/u6dRKJwZ/versions/P23di0ns/jei-1.21.1-fabric-19.25.1.332.jar",
     "owo-lib": "https://cdn.modrinth.com/data/ccKDOlHs/versions/JB1fLQnc/owo-lib-0.12.15.4+1.21.jar",
-    "regions_unexplored": "https://cdn.modrinth.com/data/Tkikq67H/versions/ZS3DtSyB/regions_unexplored-fabric-1.21.1-0.5.6.1.jar",
+    "regions_unexplored": "https://cdn.modrinth.com/data/Tkikq67H/versions/fdZGrfYW/regions_unexplored-fabric-1.21.1-0.5.7.jar",
     "TerraBlender": "https://cdn.modrinth.com/data/kkmrDlKT/versions/XNtIBXyQ/TerraBlender-fabric-1.21.1-4.1.0.8.jar",
     "trinkets": "https://cdn.modrinth.com/data/5aaWibi9/versions/JagCscwi/trinkets-3.10.0.jar",
     "cobblestats-fabric": "https://cdn.modrinth.com/data/jlXFcQk4/versions/RXTZDeTb/cobblestats-fabric-1.8%2B1.21.1.jar",
-    "cobblemonresearchtasks": "https://cdn.modrinth.com/data/zoP5qy7S/versions/1wxbXbud/cobblemonresearchtasks-1.3.jar",
+    "cobblemonresearchtasks": "https://cdn.modrinth.com/data/zoP5qy7S/versions/Ouq78J5M/cobblemonresearchtasks-1.4.jar",
     "accessories_compat_layer-fabric": "https://cdn.modrinth.com/data/ySnjMzLg/versions/OkGF8Kho/accessories_compat_layer-fabric-0.1.10%2B1.21.1.jar",
     "athena-fabric": "https://cdn.modrinth.com/data/b1ZV3DIJ/versions/7PcGW9Vp/athena-fabric-1.21-4.0.2.jar",
     "resourcefullib-fabric": "https://cdn.modrinth.com/data/G1hIVOrD/versions/Hf91FuVF/resourcefullib-fabric-1.21-3.0.12.jar",
@@ -56,7 +56,7 @@
     "Cobbreeding-fabric":"https://cdn.modrinth.com/data/ItmVb4zY/versions/txiMM5yA/Cobbreeding-fabric-2.1.1.jar",
     "modernfix-fabric": "https://cdn.modrinth.com/data/nmDcB62a/versions/NnNX8LBn/modernfix-fabric-5.25.1+mc1.21.1.jar",
     "geckolib-fabric": "https://cdn.modrinth.com/data/8BmcQJ2H/versions/fHBvu50G/geckolib-fabric-1.21.1-4.8.2.jar",
-    "cobblemonraiddens-fabric": "https://cdn.modrinth.com/data/GebWh45l/versions/kLYPr3jE/cobblemonraiddens-fabric-0.5.2%2B1.21.1.jar",
+    "cobblemonraiddens-fabric": "https://cdn.modrinth.com/data/GebWh45l/versions/U0MEIy7Q/cobblemonraiddens-fabric-0.5.5%2B1.21.1.jar",
     "cobblemonalphasFabric": "https://cdn.modrinth.com/data/QnWyhFGf/versions/fSa60T1Q/cobblemonalphasFabric-1.3%2B1.7.0.jar",
     "cobblemonoutbreaks-fabric": "https://cdn.modrinth.com/data/ZrvT3v2D/versions/KTJ0Fkfx/cobblemonoutbreaks-fabric-1.0.0-1.21.1.jar",
     "XaerosWorldMap": "https://cdn.modrinth.com/data/NcUtCpym/versions/HXRzzOuL/XaerosWorldMap_1.39.12_Fabric_1.21.jar",
@@ -64,7 +64,7 @@
     "cobblemonpokemonbadges": "https://cdn.modrinth.com/data/pPldOOeY/versions/LFfopB1R/cobblemonpokemonbadges-fabric-0.1.1.jar",
     "Jade": "https://cdn.modrinth.com/data/nvQzSEkH/versions/PtcHhnOY/Jade-1.21.1-Fabric-15.10.2.jar",
     "no_field_breaking": "https://cdn.modrinth.com/data/96nj4UV6/versions/jeaxnck9/no_field_breaking-1.0.0.jar",
-    "cobblemon-secret-base-trainer": "https://cdn.modrinth.com/data/medEuFrY/versions/rYpGsw9Y/cobblemon-secret-base-trainer-fabric-1.5.12.jar",
+    "cobblemon-secret-base-trainer": "https://cdn.modrinth.com/data/medEuFrY/versions/kPMADVl2/cobblemon-secret-base-trainer-fabric-1.5.13.jar",
     "Cobblemon-Trials-Edition": "https://cdn.modrinth.com/data/oH4pigcS/versions/heWeqYpc/Cobblemon-Trials-Edition-1.0.0.jar"
   }
 }
