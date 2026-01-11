@@ -3,7 +3,7 @@ $OutputEncoding = [System.Text.Encoding]::UTF8
 
 # ================= CONFIGURACIÓN BÁSICA =================
 $MinecraftVer = "1.21.1"
-$FabricLoaderVer = "0.18.2"
+$FabricLoaderVer = "0.18.4"
 $ProfileName = "Cobblemon USMQL"
 $DefaultInstancePath = "$env:APPDATA\.minecraft\profiles\Cobblemon_USMQL" # Ruta por defecto
 $MinecraftRoot = "$env:APPDATA\.minecraft"
